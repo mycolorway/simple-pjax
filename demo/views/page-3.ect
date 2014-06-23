@@ -1,0 +1,37 @@
+<% unless @pjax : %>
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>第三页</title>
+
+	<script type="text/javascript" src="/vendor/bower/jquery/dist/jquery.min.js"></script>
+	<script type="text/javascript" src="/vendor/bower/simple-module/lib/module.js"></script>
+	<script type="text/javascript" src="/vendor/bower/simple-url/lib/url.js"></script>
+	<script type="text/javascript" src="/lib/pjax.js"></script>
+	<script type="text/javascript" src="/demo/scripts/demo.js"></script>
+</head>
+<body>
+
+<div id="page-wrapper">
+<% end %>
+
+	<div class="page" id="page-3" data-page-name="第三页">
+		<ul class="nav">
+			<li><a href="/" data-pjax>第一页</a></li>
+			<li><a href="/page-2/" data-pjax>第二页</a></li>
+			<li class="active"><a href="/page-3/" data-pjax>第三页</a></li>
+		</ul>
+
+    <p>第三页的内容</p>
+	</div>
+
+<% unless @pjax : %>
+</div>
+
+</body>
+</html>
+<% end %>
+
+
+

@@ -1,0 +1,29 @@
+{
+	"name": "simple-pjax",
+	"version": "1.0.0",
+	"homepage": "https://github.com/mycolorway/simple-pjax",
+	"authors": [
+		"farthinker <farthinker@gmail.com>"
+	],
+	"description": "simple pjax loading component",
+	"main": "lib/pjax.js",
+	"keywords": [
+		"pjax"
+	],
+	"license": "MIT",
+	"ignore": [
+		"**/.*",
+		"node_modules",
+		"vendor",
+		"Gemfile",
+		"Gruntfile.coffee",
+		"package.json",
+		"server.js",
+		"README"
+	],
+	"dependencies": {
+		"jquery": "~2.1.0",
+		"simple-module": "~1.0.0",
+		"simple-url": "master"
+	}
+}
