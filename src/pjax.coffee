@@ -50,6 +50,12 @@ class Pjax extends Widget
 
 
     if @opts.history
+      @on 'pushstate.pjax', (e, state) =>
+        history.pushState state, state.name, state.url
+
+      @on 'replacestate.pjax', (e, state) =>
+        history.replaceState state, state.name, state.url
+
       $(window).off('popstate.pjax').on 'popstate.pjax', (e) =>
         state = e.originalEvent.state
         return unless state
@@ -94,7 +100,7 @@ class Pjax extends Widget
         html: ''
 
     document.title = page.name
-    history.pushState page, page.name, url.toString()
+    @trigger 'pushstate.pjax', [page]
     @requestPage page
 
 
@@ -141,9 +147,9 @@ class Pjax extends Widget
         html: @el.html()
       $page = @el.children().first()
 
-    history.replaceState page, page.name, page.url.toString()
     @url = simple.url page.url
     @setCache page
+    @trigger 'replacestate.pjax', [page]
 
     pageId = $page.attr 'id'
     @trigger 'pjaxload', [$page, page]
@@ -156,7 +162,7 @@ class Pjax extends Widget
 
     if page
       @setCache page
-      history.replaceState page, page.name, page.url.toString()
+      @trigger 'replacestate.pjax', [page]
 
     @url = ''
     @el.empty()
