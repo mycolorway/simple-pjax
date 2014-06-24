@@ -13,6 +13,7 @@
 	"license": "MIT",
 	"ignore": [
 		"**/.*",
+		"demo",
 		"node_modules",
 		"vendor",
 		"Gemfile",
@@ -23,7 +24,7 @@
 	],
 	"dependencies": {
 		"jquery": "~2.1.0",
-		"simple-module": "~1.0.0",
+		"simple-module": "master",
 		"simple-url": "master"
 	}
 }

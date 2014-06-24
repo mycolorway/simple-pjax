@@ -177,14 +177,9 @@ class Pjax extends Widget
   clearCache: () ->
     Pjax.pageCache[@url.toString()] = undefined
 
-  _i18n: (key) ->
-    Pjax.i18n[Pjax.locale]?[key]
-
   @i18n:
     'zh-CN':
       loading: '正在加载'
-
-  @locale: 'zh-CN'
 
 
 
