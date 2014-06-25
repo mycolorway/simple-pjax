@@ -53,11 +53,11 @@ class Pjax extends Widget
     if @opts.history
       @on 'pushstate.pjax', (e, state) =>
         history.pushState state, state.name, state.url
-        document.title = page.name
+        document.title = state.name
 
       @on 'replacestate.pjax', (e, state) =>
         history.replaceState state, state.name, state.url
-        document.title = page.name
+        document.title = state.name
 
       $(window).off('popstate.pjax').on 'popstate.pjax', (e) =>
         state = e.originalEvent.state
