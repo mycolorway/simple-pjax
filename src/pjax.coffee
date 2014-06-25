@@ -14,6 +14,7 @@ class Pjax extends Widget
     return unless @supportHistory
 
     @el = if @opts.el then $(@opts.el) else $('body')
+    @el.addClass 'simple-pjax'
 
     @el.on 'click', 'a[data-pjax]', (e) =>
       e.preventDefault()
@@ -52,9 +53,11 @@ class Pjax extends Widget
     if @opts.history
       @on 'pushstate.pjax', (e, state) =>
         history.pushState state, state.name, state.url
+        document.title = page.name
 
       @on 'replacestate.pjax', (e, state) =>
         history.replaceState state, state.name, state.url
+        document.title = page.name
 
       $(window).off('popstate.pjax').on 'popstate.pjax', (e) =>
         state = e.originalEvent.state
@@ -99,7 +102,6 @@ class Pjax extends Widget
         name: @_i18n('loading')
         html: ''
 
-    document.title = page.name
     @trigger 'pushstate.pjax', [page]
     @requestPage page
 
@@ -139,7 +141,6 @@ class Pjax extends Widget
       @el.removeClass 'pjax-loading'
 
       page.name = $page.data 'page-name' unless page.name
-      document.title = page.name
     else
       page =
         url: simple.url().toString()
