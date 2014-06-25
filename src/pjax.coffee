@@ -51,11 +51,11 @@ class Pjax extends Widget
 
 
     if @opts.history
-      @on 'pushstate.pjax', (e, state) =>
+      @on 'pushstate', (e, state) =>
         history.pushState state, state.name, state.url
         document.title = state.name
 
-      @on 'replacestate.pjax', (e, state) =>
+      @on 'replacestate', (e, state) =>
         history.replaceState state, state.name, state.url
         document.title = state.name
 
@@ -79,7 +79,7 @@ class Pjax extends Widget
     if typeof url == 'string'
       url = simple.url url
 
-    return if simple.url().toString() == url.toString()
+    return if @url and @url.toString('relative') == url.toString('relative')
 
     opts = $.extend
       nocache: false
@@ -89,7 +89,7 @@ class Pjax extends Widget
       @request.abort()
       @request = null
 
-    @unload()
+    @unload() if @url
     @url = url
 
     page = @getCache()
@@ -98,11 +98,11 @@ class Pjax extends Widget
     else
       @el.addClass 'pjax-loading'
       page =
-        url: url.toString()
+        url: url.toString('relative')
         name: @_i18n('loading')
         html: ''
 
-    @trigger 'pushstate.pjax', [page]
+    @trigger 'pushstate', [$.extend({}, page)]
     @requestPage page
 
 
@@ -130,7 +130,7 @@ class Pjax extends Widget
 
   loadPage: (page) ->
     if page
-      page.url = @url.toString() unless page.url
+      page.url = @url.toString('relative') unless page.url
 
       try
         $page = $(page.html)
@@ -143,14 +143,14 @@ class Pjax extends Widget
       page.name = $page.data 'page-name' unless page.name
     else
       page =
-        url: simple.url().toString()
+        url: simple.url().toString('relative')
         name: document.title
         html: @el.html()
       $page = @el.children().first()
 
     @url = simple.url page.url
     @setCache page
-    @trigger 'replacestate.pjax', [page]
+    @trigger 'replacestate', [$.extend({}, page)]
 
     pageId = $page.attr 'id'
     @trigger 'pjaxload', [$page, page]
@@ -163,26 +163,26 @@ class Pjax extends Widget
 
     if page
       @setCache page
-      @trigger 'replacestate.pjax', [page]
+      @trigger 'replacestate', [$.extend({}, page)]
 
-    @url = ''
+    @url = null
     @el.empty()
 
   setCache: (page) ->
     unless page
       page = 
-        url: @url.toString()
+        url: @url.toString('relative')
         name: document.title
         html: @el.html()
 
-    Pjax.pageCache[@url.toString()] = page
+    Pjax.pageCache[page.url] = page
     page
 
   getCache: ->
-    Pjax.pageCache[@url.toString()]
+    Pjax.pageCache[@url.toString('relative')]
 
   clearCache: () ->
-    Pjax.pageCache[@url.toString()] = undefined
+    Pjax.pageCache[@url.toString('relative')] = undefined
 
   @i18n:
     'zh-CN':
