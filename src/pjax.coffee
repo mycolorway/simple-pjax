@@ -5,6 +5,7 @@ class Pjax extends Widget
     el: null
     autoload: true
     history: true
+    slowTime: 800
 
   supportHistory: !!(window.history && history.pushState)
 
@@ -97,6 +98,10 @@ class Pjax extends Widget
       @el.html page.html
     else
       @el.addClass 'pjax-loading'
+      @slowTimer = setTimeout =>
+        @el.addClass 'pjax-loading-slow'
+        @slowTimer = null
+      , @opts.slowTime
       page =
         url: url.toString('relative')
         name: @_i18n('loading')
@@ -137,8 +142,10 @@ class Pjax extends Widget
       catch error
         $page = ''
 
+      clearTimeout @slowTimer if @slowTimer
       @el.empty().append $page
       @el.removeClass 'pjax-loading'
+      @el.removeClass 'pjax-loading-slow'
 
       page.name = $page.data 'page-name' unless page.name
     else
