@@ -52,14 +52,6 @@ class Pjax extends Widget
 
 
     if @opts.history
-      @on 'pushstate', (e, state) =>
-        history.pushState state, state.name, state.url
-        document.title = state.name
-
-      @on 'replacestate', (e, state) =>
-        history.replaceState state, state.name, state.url
-        document.title = state.name
-
       $(window).off('popstate.pjax').on 'popstate.pjax', (e) =>
         state = e.originalEvent.state
         return unless state
@@ -107,7 +99,11 @@ class Pjax extends Widget
         name: @_i18n('loading')
         html: ''
 
-    @trigger 'pushstate', [$.extend({}, page)]
+    state = $.extend {}, page
+    @trigger 'pushstate', [state]
+    history.pushState state, state.name, state.url
+    document.title = state.name
+
     @requestPage page
 
 
@@ -157,7 +153,11 @@ class Pjax extends Widget
 
     @url = simple.url page.url
     @setCache page
-    @trigger 'replacestate', [$.extend({}, page)]
+
+    state = $.extend {}, page
+    @trigger 'replacestate', [state]
+    history.replaceState state, state.name, state.url
+    document.title = state.name
 
     pageId = $page.attr 'id'
     @trigger 'pjaxload', [$page, page]
@@ -170,7 +170,11 @@ class Pjax extends Widget
 
     if page
       @setCache page
-      @trigger 'replacestate', [$.extend({}, page)]
+
+      state = $.extend {}, page
+      @trigger 'replacestate', [state]
+      history.replaceState state, state.name, state.url
+      document.title = state.name
 
     @url = null
     @el.empty()
