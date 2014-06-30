@@ -78,9 +78,13 @@ class Pjax extends Widget
 
         @el.html state.html
         document.title = state.name
-        @requestPage state
+        #@requestPage state
+        @loadPage()
 
     if @opts.autoload
+      if history.state
+        @el.html history.state.html
+        document.title = history.state.name
       @loadPage()
 
 
@@ -98,7 +102,7 @@ class Pjax extends Widget
       @request.abort()
       @request = null
 
-    if @url and @uload() == false
+    if @url and @unload() == false
       return false
     @url = url
 
