@@ -98,7 +98,8 @@ class Pjax extends Widget
       @request.abort()
       @request = null
 
-    @unload() if @url
+    if @url and @uload() == false
+      return false
     @url = url
 
     page = @getCache()
@@ -181,8 +182,8 @@ class Pjax extends Widget
 
   unload: ->
     page = @getCache() if @url
-    if @triggerHandler('pjaxunload', [page]) == false
-      return
+    if @triggerHandler('pjaxunload', [@el.children().first(), page]) == false
+      return false
 
     if page
       @setCache page
