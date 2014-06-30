@@ -45,10 +45,26 @@ class Pjax extends Widget
       url = simple.url page.url
       return unless url.hash
 
-      $target = $('#' + url.hash)
-      targetOffset = $target.offset()
-      $(document).scrollTop(targetOffset.top - 30)
-        .scrollLeft(targetOffset.left - 30)
+      promises = []
+      $page.find('img').each (i, img) =>
+        return if img.complete
+        $img = $(img)
+        dfd = $.Deferred()
+        $img.data('dfd', dfd).one 'load', () =>
+          dfd = $img.data 'dfd'
+          if dfd
+            dfd.resolve()
+            $img.removeData 'dfd'
+        promises.push dfd.promise()
+
+      $.when.apply(@, promises).done () ->
+        $page[0].offsetHeight # force relow
+        setTimeout ->
+          $target = $('#' + url.hash)
+          targetOffset = $target.offset()
+          $(document).scrollTop(targetOffset.top - 30)
+            .scrollLeft(targetOffset.left - 30)
+        , 0
 
 
     if @opts.history
