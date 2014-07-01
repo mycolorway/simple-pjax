@@ -33,7 +33,7 @@ class Pjax extends Widget
           top: $(document).scrollTop()
           left: $(document).scrollLeft()
 
-    @on 'pjaxload', (e, $page, page) =>
+    @on 'pjaxbeforeload', (e, page) =>
       if page.params and page.params.scrollPosition
         $(document).scrollTop(page.params.scrollPosition.top)
           .scrollLeft(page.params.scrollPosition.left)
@@ -41,6 +41,7 @@ class Pjax extends Widget
         $(document).scrollTop(0)
           .scrollLeft(0)
 
+    @on 'pjaxload', (e, $page, page) =>
       return unless page.url
       url = simple.url page.url
       return unless url.hash
@@ -125,6 +126,7 @@ class Pjax extends Widget
     history.pushState state, state.name, state.url
     document.title = state.name
 
+    @trigger 'pjaxbeforeload', [page]
     @requestPage page
 
 
