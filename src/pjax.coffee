@@ -6,6 +6,7 @@ class Pjax extends Widget
     autoload: true
     history: true
     slowTime: 800
+    title: '{{ name }}'
 
   supportHistory: !!(window.history && history.pushState)
 
@@ -25,6 +26,7 @@ class Pjax extends Widget
       if url
         @load url, 
           nocache: $link.is '[data-pjax-nocache]'
+          norefresh: $link.is '[data-pjax-norefresh]'
 
     @on 'pjaxunload', (e, page) =>
       page.params = {} unless page.params
@@ -78,14 +80,14 @@ class Pjax extends Widget
           @request = null
 
         @el.html state.html
-        document.title = state.name
+        document.title = @opts.title.replace '{{ name }}', state.name
         #@requestPage state
         @loadPage()
 
     if @opts.autoload
       if history.state
         @el.html history.state.html
-        document.title = history.state.name
+        document.title = @opts.title.replace '{{ name }}', history.state.name
       @loadPage()
 
 
@@ -123,12 +125,18 @@ class Pjax extends Widget
 
     state = $.extend {}, page
     @trigger 'pushstate', [state]
-    history.pushState state, state.name, state.url
-    document.title = state.name
+    document.title = @opts.title.replace '{{ name }}', state.name
+    history.pushState state, document.title, state.url
 
     @trigger 'pjaxbeforeload', [page]
-    @requestPage page
 
+    if opts.norefresh and page
+      $page = @el.children().first()
+      pageId = $page.attr 'id'
+      @trigger 'pjaxload', [$page, page]
+      $(document).trigger 'pjaxload#' + pageId, [$page, page] if pageId
+    else
+      @requestPage page
 
   requestPage: (page) ->
     @request = $.ajax
@@ -168,45 +176,45 @@ class Pjax extends Widget
 
       page.name = $page.data 'page-name' unless page.name
     else
+      $page = @el.children().first()
       page =
         url: simple.url().toString('relative')
-        name: document.title
+        name: $page.data('page-name') || document.title
         html: @el.html()
-      $page = @el.children().first()
 
     @url = simple.url page.url
     @setCache page
 
     state = $.extend {}, page
     @trigger 'replacestate', [state]
-    history.replaceState state, state.name, state.url
-    document.title = state.name
+    document.title = @opts.title.replace '{{ name }}', state.name
+    history.replaceState state, document.title, state.url
 
     pageId = $page.attr 'id'
     @trigger 'pjaxload', [$page, page]
     $(document).trigger 'pjaxload#' + pageId, [$page, page] if pageId
 
   unload: ->
-    page = @getCache() if @url
+    page = @setCache() if @url
     if @triggerHandler('pjaxunload', [@el.children().first(), page]) == false
       return false
 
     if page
-      @setCache page
-
       state = $.extend {}, page
       @trigger 'replacestate', [state]
-      history.replaceState state, state.name, state.url
-      document.title = state.name
+      document.title = @opts.title.replace '{{ name }}', state.name
+      history.replaceState state, document.title, state.url
 
     @url = null
     @el.empty()
+    page
 
   setCache: (page) ->
     unless page
+      $page = @el.children().first()
       page = 
         url: @url.toString('relative')
-        name: document.title
+        name: $page.data('page-name') || document.title
         html: @el.html()
 
     Pjax.pageCache[page.url] = page
