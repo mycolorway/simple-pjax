@@ -28,20 +28,12 @@ class Pjax extends Widget
           nocache: $link.is '[data-pjax-nocache]'
           norefresh: $link.is '[data-pjax-norefresh]'
 
-    @on 'pjaxunload', (e, page) =>
+    @on 'pjaxunload', (e, $page, page) =>
       page.params = {} unless page.params
       $.extend page.params,
         scrollPosition:
           top: $(document).scrollTop()
           left: $(document).scrollLeft()
-
-    @on 'pjaxbeforeload', (e, page) =>
-      if page.params and page.params.scrollPosition
-        $(document).scrollTop(page.params.scrollPosition.top)
-          .scrollLeft(page.params.scrollPosition.left)
-      else
-        $(document).scrollTop(0)
-          .scrollLeft(0)
 
     @on 'pjaxload', (e, $page, page) =>
       return unless page.url
@@ -129,6 +121,13 @@ class Pjax extends Widget
     history.pushState state, document.title, state.url
 
     @trigger 'pjaxbeforeload', [page]
+
+    if opts.scrollPosition and state.params?.scrollPosition
+      $(document).scrollTop(state.params.scrollPosition.top)
+        .scrollLeft(state.params.scrollPosition.left)
+    else
+      $(document).scrollTop(0)
+        .scrollLeft(0)
 
     if opts.norefresh and page
       $page = @el.children().first()
