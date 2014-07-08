@@ -153,7 +153,7 @@ class Pjax extends Widget
 
         page.html = xhr.responseText
         @loadPage page
-        @clearCache()
+        Pjax.clearCache page.url
       success: (result) =>
         page.html = $.trim result
         page.name = ''
@@ -222,8 +222,13 @@ class Pjax extends Widget
   getCache: ->
     Pjax.pageCache[@url.toString('relative')]
 
-  clearCache: () ->
-    Pjax.pageCache[@url.toString('relative')] = undefined
+  @clearCache: (url) ->
+    if url
+      if typeof url == 'string'
+        url = simple.url(url).toString('relative')
+      Pjax.pageCache[url] = undefined
+    else
+      Pjax.pageCache = {}
 
   @i18n:
     'zh-CN':
@@ -235,3 +240,5 @@ window.simple ||= {}
 
 simple.pjax = (opts) ->
   new Pjax(opts)
+
+simple.pjax.clearCache = Pjax.clearCache
