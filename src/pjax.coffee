@@ -36,6 +36,8 @@ class Pjax extends Widget
           left: $(document).scrollLeft()
 
     @on 'pjaxload', (e, $page, page) =>
+      @el.removeClass 'page-unloaded'
+
       return unless page.url
       url = simple.url page.url
       return unless url.hash
@@ -226,7 +228,7 @@ class Pjax extends Widget
       history.replaceState state, title, state.url
 
     @url = null
-    @el.empty()
+    @el.addClass('page-unloaded').empty()
     page
 
   setCache: (page) ->
@@ -263,5 +265,4 @@ simple.pjax = (opts) ->
   new Pjax(opts)
 
 simple.pjax.clearCache = Pjax.clearCache
-
 
