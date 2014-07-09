@@ -72,16 +72,30 @@ class Pjax extends Widget
           @request = null
 
         @el.html state.html
-        document.title = @opts.title.replace '{{ name }}', state.name
+        @pageTile state.name
         #@requestPage state
         @loadPage()
 
     if @opts.autoload
       if history.state
         @el.html history.state.html
-        document.title = @opts.title.replace '{{ name }}', history.state.name
+        @pageTitle history.state.name
       @loadPage()
 
+  pageTitle: (title) ->
+    if title
+      title = @opts.title.replace '{{ name }}', title
+      @trigger 'setpagetitle', [title]
+      document.title = title
+    else
+      title = document.title
+      @trigger 'getpagetitle', [title]
+
+      re = new RegExp @opts.title.replace('{{ name }}', '(\S+)'), 'g'
+      match = re.exec title
+      title = match[1]
+
+    title
 
   load: (url, opts) ->
     if typeof url == 'string'
@@ -117,8 +131,8 @@ class Pjax extends Widget
 
     state = $.extend {}, page
     @trigger 'pushstate', [state]
-    document.title = @opts.title.replace '{{ name }}', state.name
-    history.pushState state, document.title, state.url
+    title = @pageTile state.name
+    history.pushState state, title, state.url
 
     @trigger 'pjaxbeforeload', [page]
 
@@ -178,7 +192,7 @@ class Pjax extends Widget
       $page = @el.children().first()
       page =
         url: simple.url().toString('relative')
-        name: $page.data('page-name') || document.title
+        name: $page.data('page-name') || @pageTitle()
         html: @el.html()
 
     @url = simple.url page.url
@@ -186,8 +200,8 @@ class Pjax extends Widget
 
     state = $.extend {}, page
     @trigger 'replacestate', [state]
-    document.title = @opts.title.replace '{{ name }}', state.name
-    history.replaceState state, document.title, state.url
+    title = @pageTitle state.name
+    history.replaceState state, title, state.url
 
     pageId = $page.attr 'id'
     @trigger 'pjaxload', [$page, page]
@@ -201,8 +215,8 @@ class Pjax extends Widget
     if page
       state = $.extend {}, page
       @trigger 'replacestate', [state]
-      document.title = @opts.title.replace '{{ name }}', state.name
-      history.replaceState state, document.title, state.url
+      title = @pageTitle state.name
+      history.replaceState state, title, state.url
 
     @url = null
     @el.empty()
@@ -213,7 +227,7 @@ class Pjax extends Widget
       $page = @el.children().first()
       page = 
         url: @url.toString('relative')
-        name: $page.data('page-name') || document.title
+        name: $page.data('page-name') || @pageTitle()
         html: @el.html()
 
     Pjax.pageCache[page.url] = page
