@@ -72,7 +72,7 @@ class Pjax extends Widget
           @request = null
 
         @el.html state.html
-        @pageTile state.name
+        @pageTitle state.name
         #@requestPage state
         @loadPage()
 
@@ -85,14 +85,21 @@ class Pjax extends Widget
   pageTitle: (title) ->
     if title
       title = @opts.title.replace '{{ name }}', title
-      @trigger 'setpagetitle', [title]
-      document.title = title
+      params =
+        pjax: @,
+        title: title
+      $(document).triggerHandler 'setpagetitle.pjax', [params]
+      title = params.title
+      document.title = title unless document.title == title
     else
       title = document.title
-      @trigger 'getpagetitle', [title]
+      params =
+        pjax: @,
+        title: title
+      $(document).trigger 'getpagetitle.pjax', [params]
 
       re = new RegExp @opts.title.replace('{{ name }}', '(\S+)'), 'g'
-      match = re.exec title
+      match = re.exec params.title
       title = match[1]
 
     title
@@ -131,7 +138,7 @@ class Pjax extends Widget
 
     state = $.extend {}, page
     @trigger 'pushstate', [state]
-    title = @pageTile state.name
+    title = @pageTitle state.name
     history.pushState state, title, state.url
 
     @trigger 'pjaxbeforeload', [page]
@@ -256,3 +263,5 @@ simple.pjax = (opts) ->
   new Pjax(opts)
 
 simple.pjax.clearCache = Pjax.clearCache
+
+
