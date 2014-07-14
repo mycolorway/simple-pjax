@@ -72,6 +72,7 @@ class Pjax extends Widget
           @request = null
 
         @el.html state.html
+        @el[0].offsetHeight
         @pageTitle state.name
         #@requestPage state
         @loadPage()
