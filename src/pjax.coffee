@@ -36,8 +36,6 @@ class Pjax extends Widget
           left: $(document).scrollLeft()
 
     @on 'pjaxload', (e, $page, page) =>
-      @el.removeClass 'page-unloaded'
-
       return unless page.url
       url = simple.url page.url
       return unless url.hash
@@ -143,6 +141,7 @@ class Pjax extends Widget
     title = @pageTitle state.name
     history.pushState state, title, state.url
 
+    @el.height ''
     @trigger 'pjaxbeforeload', [page]
 
     if opts.scrollPosition and state.params?.scrollPosition
@@ -212,6 +211,8 @@ class Pjax extends Widget
     title = @pageTitle state.name
     history.replaceState state, title, state.url
 
+    @el.height ''
+
     pageId = $page.attr 'id'
     @trigger 'pjaxload', [$page, page]
     $(document).trigger 'pjaxload#' + pageId, [$page, page] if pageId
@@ -228,7 +229,11 @@ class Pjax extends Widget
       history.replaceState state, title, state.url
 
     @url = null
-    @el.addClass('page-unloaded').empty()
+
+    # prevese height before unload for saving scroll position
+    @el.height @el.height()
+
+    @el.empty()
     page
 
   setCache: (page) ->
