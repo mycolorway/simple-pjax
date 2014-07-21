@@ -99,7 +99,7 @@ class Pjax extends Widget
         title: title
       $(document).trigger 'getpagetitle.pjax', [params]
 
-      re = new RegExp @opts.title.replace('{{ name }}', '(\S+)'), 'g'
+      re = new RegExp @opts.title.replace('{{ name }}', '(\\S+)'), 'g'
       match = re.exec params.title
       title = match[1]
 
