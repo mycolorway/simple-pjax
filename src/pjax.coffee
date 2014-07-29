@@ -235,6 +235,9 @@ class Pjax extends Widget
     if @triggerHandler('pjaxunload', [@el.children().first(), page]) == false
       return false
 
+    # set cache again for posible dom change in unload event
+    @setCache()
+
     if page
       state = $.extend {}, page,
         html: ''
