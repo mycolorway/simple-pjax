@@ -184,8 +184,13 @@ class Pjax extends Widget
       success: (result, status, xhr) =>
         page.html = $.trim result
         page.name = ''
+
         if pageUrl = xhr.getResponseHeader 'X-PJAX-URL'
-          page.url = simple.url(pageUrl).toString('relative')
+          originUrl = simple.url page.url
+          pageUrl = simple.url(pageUrl)
+          pageUrl.hash = originUrl.hash unless pageUrl.hash
+          page.url = pageUrl.toString('relative')
+
         @loadPage page
 
   loadPage: (page) ->
