@@ -24,7 +24,7 @@ class Pjax extends Widget
       url = simple.url $link.attr 'href'
 
       if url
-        @load url, 
+        @load url,
           nocache: $link.is '[data-pjax-nocache]'
           norefresh: $link.is '[data-pjax-norefresh]'
 
@@ -56,6 +56,7 @@ class Pjax extends Widget
         $page[0].offsetHeight # force relow
         setTimeout ->
           $target = $('#' + url.hash)
+          return unless $target.length > 0
           targetOffset = $target.offset()
           $(document).scrollTop(targetOffset.top - 30)
             .scrollLeft(targetOffset.left - 30)
@@ -236,7 +237,8 @@ class Pjax extends Widget
       return false
 
     # set cache again for posible dom change in unload event
-    @setCache()
+    page.html = @el.html()
+    @setCache page
 
     if page
       state = $.extend {}, page,
@@ -256,7 +258,7 @@ class Pjax extends Widget
   setCache: (page) ->
     unless page
       $page = @el.children().first()
-      page = 
+      page =
         url: @url.toString('relative')
         name: $page.data('page-name') || @pageTitle()
         html: @el.html()
