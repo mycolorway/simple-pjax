@@ -68,6 +68,9 @@ class Pjax extends Widget
         state = e.originalEvent.state
         return unless state
 
+        if @triggerHandler('pajxunload', [@el.children().first(), @getCache()]) == false
+          return
+
         if @request
           @request.abort()
           @request = null
