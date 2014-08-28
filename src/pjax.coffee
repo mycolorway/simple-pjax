@@ -141,7 +141,7 @@ class Pjax extends Widget
       , @opts.slowTime
       page =
         url: url.toString('relative')
-        name: @_i18n('loading')
+        name: @_t('loading')
         html: ''
 
     state = $.extend {}, page,
