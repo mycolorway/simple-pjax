@@ -1,5 +1,4 @@
 source 'http://ruby.taobao.org'
 
-gem 'sass'
-gem 'coffee-script'
+gem 'sass',    '>= 3.4.0'
 

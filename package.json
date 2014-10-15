@@ -1,9 +1,8 @@
 {
   "name": "simple-pjax",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "A simple pjax loading component",
   "main": "demo.html",
-  "scripts": {},
   "repository": {
     "type": "git",
     "url": "https://github.com/mycolorway/simple-pjax"
@@ -15,12 +14,13 @@
   },
   "homepage": "https://github.com/mycolorway/simple-pjax",
   "devDependencies": {
-    "grunt": "~0.4.1",
-    "grunt-contrib-sass": "~0.5.0",
-    "grunt-contrib-watch": "~0.5.3",
-    "grunt-contrib-coffee": "~0.8.0",
-    "grunt-express": "~1.2.1",
-    "express": "~3.5.1",
-    "ect": "~0.5.9"
+    "grunt": "0.x",
+    "grunt-contrib-sass": "0.x",
+    "grunt-contrib-watch": "0.x",
+    "grunt-contrib-coffee": "0.x",
+    "grunt-umd": "2.x",
+    "grunt-express": "1.4.0",
+    "express": "~3.3.4",
+    "ect": "0.x"
   }
 }

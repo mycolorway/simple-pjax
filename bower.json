@@ -1,6 +1,6 @@
 {
 	"name": "simple-pjax",
-	"version": "1.0.0",
+	"version": "2.0.0",
 	"homepage": "https://github.com/mycolorway/simple-pjax",
 	"authors": [
 		"farthinker <farthinker@gmail.com>"
@@ -23,8 +23,8 @@
 		"README"
 	],
 	"dependencies": {
-		"jquery": "~2.1.0",
-		"simple-module": "master",
-		"simple-url": "master"
+		"jquery": "2.x",
+		"simple-module": "2.x",
+		"simple-url": "2.x"
 	}
 }

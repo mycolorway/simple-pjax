@@ -1,5 +1,5 @@
 
-class Pjax extends Widget
+class Pjax extends SimpleModule
 
   opts:
     el: null
@@ -21,7 +21,7 @@ class Pjax extends Widget
     @el.on 'click', 'a[data-pjax]', (e) =>
       e.preventDefault()
       $link = $(e.currentTarget)
-      url = simple.url $link.attr 'href'
+      url = simpleUrl $link.attr 'href'
 
       if url
         @load url,
@@ -37,7 +37,7 @@ class Pjax extends Widget
 
     @on 'pjaxload', (e, $page, page) =>
       return unless page.url
-      url = simple.url page.url
+      url = simpleUrl page.url
       return unless url.hash
 
       promises = []
@@ -85,9 +85,9 @@ class Pjax extends Widget
         @loadPage()
 
     if @opts.autoload
-      if history.state
-        @el.html history.state.html
-        @pageTitle history.state.name
+      #if history.state
+        #@el.html history.state.html
+        #@pageTitle history.state.name
       @loadPage()
 
   pageTitle: (title) ->
@@ -114,7 +114,7 @@ class Pjax extends Widget
 
   load: (url, opts) ->
     if typeof url == 'string'
-      url = simple.url url
+      url = simpleUrl url
 
     return if @url and @url.toString('relative') == url.toString('relative')
 
@@ -190,8 +190,8 @@ class Pjax extends Widget
         page.name = ''
 
         if pageUrl = xhr.getResponseHeader 'X-PJAX-URL'
-          originUrl = simple.url page.url
-          pageUrl = simple.url(pageUrl)
+          originUrl = simpleUrl page.url
+          pageUrl = simpleUrl(pageUrl)
           pageUrl.hash = originUrl.hash unless pageUrl.hash
           page.url = pageUrl.toString('relative')
 
@@ -215,11 +215,11 @@ class Pjax extends Widget
     else
       $page = @el.children().first()
       page =
-        url: simple.url().toString('relative')
+        url: simpleUrl().toString('relative')
         name: $page.data('page-name') || @pageTitle()
         html: @el.html()
 
-    @url = simple.url page.url
+    @url = simpleUrl page.url
     @setCache page
 
     state = $.extend {}, page,
@@ -275,7 +275,7 @@ class Pjax extends Widget
   @clearCache: (url) ->
     if url
       if typeof url == 'string'
-        url = simple.url(url).toString('relative')
+        url = simpleUrl(url).toString('relative')
       Pjax.pageCache[url] = undefined
     else
       Pjax.pageCache = {}
@@ -286,10 +286,8 @@ class Pjax extends Widget
 
 
 
-window.simple ||= {}
-
-simple.pjax = (opts) ->
+pjax = (opts) ->
   new Pjax(opts)
 
-simple.pjax.clearCache = Pjax.clearCache
+pjax.clearCache = Pjax.clearCache
 
