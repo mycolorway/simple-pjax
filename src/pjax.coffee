@@ -19,7 +19,7 @@ class Pjax extends SimpleModule
     @el = if @opts.el then $(@opts.el) else $('body')
     @el.addClass 'simple-pjax'
 
-    @el.on 'click', "a[#{@opts.linkAttribute}]", (e) =>
+    $(document).on 'click', "a[#{@opts.linkAttribute}]", (e) =>
       e.preventDefault()
       $link = $(e.currentTarget)
       url = simpleUrl $link.attr 'href'
