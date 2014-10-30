@@ -7,6 +7,7 @@ class Pjax extends SimpleModule
     history: true
     slowTime: 800
     title: '{{ name }}'
+    linkAttribute: 'data-pjax'
 
   supportHistory: !!(window.history && history.pushState)
 
@@ -18,15 +19,15 @@ class Pjax extends SimpleModule
     @el = if @opts.el then $(@opts.el) else $('body')
     @el.addClass 'simple-pjax'
 
-    @el.on 'click', 'a[data-pjax]', (e) =>
+    $(document).on 'click', "a[#{@opts.linkAttribute}]", (e) =>
       e.preventDefault()
       $link = $(e.currentTarget)
       url = simpleUrl $link.attr 'href'
 
       if url
         @load url,
-          nocache: $link.is '[data-pjax-nocache]'
-          norefresh: $link.is '[data-pjax-norefresh]'
+          nocache: $link.is "[#{@opts.linkAttribute}-nocache]"
+          norefresh: $link.is "[#{@opts.linkAttribute}-norefresh]"
 
     @on 'pjaxunload', (e, $page, page) =>
       page.params = {} unless page.params

@@ -33,7 +33,7 @@ module.exports = (grunt) ->
     watch:
       scripts:
         files: ['src/*.coffee', 'demo/**/*.coffee']
-        tasks: ['coffee']
+        tasks: ['coffee', 'umd']
 
     express:
       server:
