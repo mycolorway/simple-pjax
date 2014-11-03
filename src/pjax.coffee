@@ -132,7 +132,7 @@ class Pjax extends SimpleModule
     @url = url
 
     page = @getCache()
-    if page and !opts.nocache
+    if page and !page.nocache and !opts.nocache
       @el.html page.html
     else
       @el.addClass 'pjax-loading'
@@ -266,6 +266,7 @@ class Pjax extends SimpleModule
         url: @url.toString('relative')
         name: $page.data('page-name') || @pageTitle()
         html: @el.html()
+        nocache: $page.is "[#{@opts.linkAttribute}-nocache]"
 
     Pjax.pageCache[page.url] = page
     page
