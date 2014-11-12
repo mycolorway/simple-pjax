@@ -79,7 +79,7 @@ class Pjax extends SimpleModule
         page = @getCache state.url
         return unless page
 
-        @el.html page.html
+        @el[0].innerHTML = page.html
         @el[0].offsetHeight
         @pageTitle state.name
         #@requestPage state
@@ -133,7 +133,7 @@ class Pjax extends SimpleModule
 
     page = @getCache()
     if page and !page.nocache and !opts.nocache
-      @el.html page.html
+      @el[0].innerHTML = page.html
     else
       @el.addClass 'pjax-loading'
       @slowTimer = setTimeout =>
