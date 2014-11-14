@@ -180,7 +180,8 @@ class Pjax extends SimpleModule
       dataType: 'html'
       complete: =>
         @request = null
-      error: (xhr) =>
+      error: (xhr, status) =>
+        return if status is 'abort'
         @trigger 'pjaxerror', [xhr]
 
         page.html = xhr.responseText
@@ -260,6 +261,8 @@ class Pjax extends SimpleModule
     page
 
   setCache: (page) ->
+    return if @el.hasClass 'pjax-loading'
+
     unless page
       $page = @el.children().first()
       page =
