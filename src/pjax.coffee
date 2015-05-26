@@ -30,6 +30,7 @@ class Pjax extends SimpleModule
           norefresh: $link.is "[#{@opts.linkAttribute}-norefresh]"
 
     @on 'pjaxunload', (e, $page, page) =>
+      page = {} unless page
       page.params = {} unless page.params
       $.extend page.params,
         scrollPosition:
@@ -116,8 +117,6 @@ class Pjax extends SimpleModule
   load: (url, opts) ->
     if typeof url == 'string'
       url = simpleUrl url
-
-    return if @url and @url.toString('relative') == url.toString('relative')
 
     opts = $.extend
       nocache: false
@@ -241,11 +240,11 @@ class Pjax extends SimpleModule
     if @triggerHandler('pjaxunload', [@el.children().first(), page]) == false
       return false
 
-    # set cache again for posible dom change in unload event
-    page.html = @el.html()
-    @setCache page
-
     if page
+      # set cache again for posible dom change in unload event
+      page.html = @el.html()
+      @setCache page
+
       state = $.extend {}, page,
         html: ''
       @trigger 'replacestate', [state]
