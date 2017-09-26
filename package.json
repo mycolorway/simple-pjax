@@ -1,6 +1,6 @@
 {
   "name": "simple-pjax",
-  "version": "2.0.0",
+  "version": "2.0.4",
   "description": "A simple pjax loading component",
   "main": "demo.html",
   "repository": {

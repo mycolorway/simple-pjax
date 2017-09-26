@@ -141,14 +141,14 @@ class Pjax extends SimpleModule
       , @opts.slowTime
       page =
         url: url.toString('relative')
-        name: @_t('loading')
+        name: document.title
         html: ''
 
     state = $.extend {}, page,
       html: ''
     @trigger 'pushstate', [state]
-    title = @pageTitle state.name
-    history.pushState state, title, state.url
+    history.pushState state, state.name, state.url
+    @pageTitle @_t('loading')
 
     @el.height ''
     @trigger 'pjaxbeforeload', [page]
