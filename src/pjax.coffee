@@ -196,9 +196,9 @@ class Pjax extends SimpleModule
           pageUrl.hash = originUrl.hash unless pageUrl.hash
           page.url = pageUrl.toString('relative')
 
-        @loadPage page
+        @loadPage page, xhr
 
-  loadPage: (page) ->
+  loadPage: (page, xhr) ->
     if page
       page.url = @url.toString('relative') unless page.url
 
@@ -233,7 +233,7 @@ class Pjax extends SimpleModule
 
     pageId = $page.attr 'id'
     $(document).trigger 'pjaxload#' + pageId, [$page, page] if pageId
-    @trigger 'pjaxload', [$page, page]
+    @trigger 'pjaxload', [$page, page, xhr]
 
   unload: ->
     page = @setCache() if @url
