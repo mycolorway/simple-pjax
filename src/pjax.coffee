@@ -22,7 +22,7 @@ class Pjax extends SimpleModule
     $(document).on 'click', "a[#{@opts.linkAttribute}]", (e) =>
       e.preventDefault()
       $link = $(e.currentTarget)
-      url = simpleUrl $link.attr 'href'
+      url = simple.url $link.attr 'href'
 
       if url
         @load url,
@@ -39,7 +39,7 @@ class Pjax extends SimpleModule
 
     @on 'pjaxload', (e, $page, page) =>
       return unless page.url
-      url = simpleUrl page.url
+      url = simple.url page.url
       return unless url.hash
 
       promises = []
@@ -116,7 +116,7 @@ class Pjax extends SimpleModule
 
   load: (url, opts) ->
     if typeof url == 'string'
-      url = simpleUrl url
+      url = simple.url url
 
     opts = $.extend
       nocache: false
@@ -191,8 +191,8 @@ class Pjax extends SimpleModule
         page.name = ''
 
         if pageUrl = xhr.getResponseHeader 'X-PJAX-URL'
-          originUrl = simpleUrl page.url
-          pageUrl = simpleUrl(pageUrl)
+          originUrl = simple.url page.url
+          pageUrl = simple.url(pageUrl)
           pageUrl.hash = originUrl.hash unless pageUrl.hash
           page.url = pageUrl.toString('relative')
 
@@ -216,11 +216,11 @@ class Pjax extends SimpleModule
     else
       $page = @el.children().first()
       page =
-        url: simpleUrl().toString('relative')
+        url: simple.url().toString('relative')
         name: $page.data('page-name') || @pageTitle()
         html: @el.html()
 
-    @url = simpleUrl page.url
+    @url = simple.url page.url
     @setCache page
 
     state = $.extend {}, page,
@@ -279,7 +279,7 @@ class Pjax extends SimpleModule
   @clearCache: (url) ->
     if url
       if typeof url == 'string'
-        url = simpleUrl(url).toString('relative')
+        url = simple.url(url).toString('relative')
       Pjax.pageCache[url] = undefined
     else
       Pjax.pageCache = {}
