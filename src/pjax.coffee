@@ -57,11 +57,13 @@ class Pjax extends SimpleModule
       $.when.apply(@, promises).done () ->
         $page[0].offsetHeight # force relow
         setTimeout ->
-          $target = $('#' + url.hash)
-          return unless $target.length > 0
-          targetOffset = $target.offset()
-          $(document).scrollTop(targetOffset.top - 30)
-            .scrollLeft(targetOffset.left - 30)
+          try
+            $target = $("##{url.hash}")
+            return unless $target.length > 0
+            targetOffset = $target.offset()
+            $(document).scrollTop(targetOffset.top - 30)
+              .scrollLeft(targetOffset.left - 30)
+          catch error
         , 0
 
 
