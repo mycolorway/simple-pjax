@@ -112,7 +112,7 @@ class Pjax extends SimpleModule
 
       re = new RegExp @opts.title.replace('{{ name }}', '(\\S+)'), 'g'
       match = re.exec params.title
-      title = match[1]
+      title = match[1] if match
 
     title
 
