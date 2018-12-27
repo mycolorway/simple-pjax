@@ -2,7 +2,7 @@
   "name": "simple-pjax",
   "version": "2.0.8",
   "description": "A simple pjax loading component",
-  "main": "demo.html",
+  "main": "lib/pjax.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/mycolorway/simple-pjax"
