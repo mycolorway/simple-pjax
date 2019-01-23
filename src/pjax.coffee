@@ -275,8 +275,11 @@ class Pjax extends SimpleModule
     Pjax.pageCache[page.url] = page
     page
 
-  getCache: (url = @url.toString('relative')) ->
-    Pjax.pageCache[url]
+  getCache: (url = @url?.toString('relative')) ->
+    if url
+      Pjax.pageCache[url]
+    else
+      null
 
   @clearCache: (url) ->
     if url
