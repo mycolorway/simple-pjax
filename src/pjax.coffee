@@ -214,7 +214,7 @@ class Pjax extends SimpleModule
       @el.removeClass 'pjax-loading'
       @el.removeClass 'pjax-loading-slow'
 
-      page.name = $page.data 'page-name' unless page.name
+      page.name = $page.data('page-name') if $page && !page.name
     else
       $page = @el.children().first()
       page =
