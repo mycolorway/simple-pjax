@@ -251,7 +251,7 @@ class Pjax extends SimpleModule
         html: ''
       @trigger 'replacestate', [state]
       title = @pageTitle state.name
-      history.replaceState state, title, state.url
+      history.replaceState state, title, "#{state.url}#{location.hash}"
 
     @url = null
 
