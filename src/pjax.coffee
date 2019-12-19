@@ -32,10 +32,15 @@ class Pjax extends SimpleModule
     @on 'pjaxunload', (e, $page, page) =>
       page = {} unless page
       page.params = {} unless page.params
+
+      selector = $page.data('scroll-container-selector')
+      $scrollContainer = if selector then $(selector) else $(document)
+      $scrollContainer = $(document) unless $scrollContainer.length
+
       $.extend page.params,
         scrollPosition:
-          top: $(document).scrollTop()
-          left: $(document).scrollLeft()
+          top: $scrollContainer.scrollTop()
+          left: $scrollContainer.scrollLeft()
 
     @on 'pjaxload', (e, $page, page) =>
       return unless page.url
@@ -155,15 +160,19 @@ class Pjax extends SimpleModule
     @el.height ''
     @trigger 'pjaxbeforeload', [page]
 
+    $page = @el.children().first()
+
     if opts.scrollPosition and state.params?.scrollPosition
-      $(document).scrollTop(state.params.scrollPosition.top)
+      selector = $page.data('scroll-container-selector')
+      $scrollContainer = if selector then $(selector) else $(document)
+      $scrollContainer = $(document) unless $scrollContainer.length
+      $scrollContainer.scrollTop(state.params.scrollPosition.top)
         .scrollLeft(state.params.scrollPosition.left)
     else
       $(document).scrollTop(0)
         .scrollLeft(0)
 
     if opts.norefresh and page
-      $page = @el.children().first()
       pageId = $page.attr 'id'
       $(document).trigger 'pjaxload#' + pageId, [$page, page] if pageId
       @trigger 'pjaxload', [$page, page]
