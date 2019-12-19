@@ -20,7 +20,7 @@
     "grunt-contrib-coffee": "0.x",
     "grunt-umd": "2.x",
     "grunt-express": "1.4.0",
-    "express": "~3.3.4",
+    "express": "~3.11.0",
     "ect": "0.x"
   }
 }
