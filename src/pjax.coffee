@@ -162,24 +162,23 @@ class Pjax extends SimpleModule
 
     $page = @el.children().first()
 
+    scrollPosition =
+      top: 0
+      left: 0
+
     if opts.scrollPosition and state.params?.scrollPosition
-      selector = $page.data('scroll-container-selector')
-      $scrollContainer = if selector then $(selector) else $(document)
-      $scrollContainer = $(document) unless $scrollContainer.length
-      $scrollContainer.scrollTop(state.params.scrollPosition.top)
-        .scrollLeft(state.params.scrollPosition.left)
-    else
-      $(document).scrollTop(0)
-        .scrollLeft(0)
+      scrollPosition.top = state.params.scrollPosition.top
+      scrollPosition.left = state.params.scrollPosition.left
 
     if opts.norefresh and page
+      @restoreScrollPosition $page, scrollPosition
       pageId = $page.attr 'id'
       $(document).trigger 'pjaxload#' + pageId, [$page, page] if pageId
       @trigger 'pjaxload', [$page, page]
     else
-      @requestPage page
+      @requestPage page, scrollPosition
 
-  requestPage: (page) ->
+  requestPage: (page, scrollPosition) ->
     @request = $.ajax
       url: page.url
       type: 'get'
@@ -207,9 +206,9 @@ class Pjax extends SimpleModule
           pageUrl.hash = originUrl.hash unless pageUrl.hash
           page.url = pageUrl.toString('relative')
 
-        @loadPage page, xhr
+        @loadPage page, xhr, scrollPosition
 
-  loadPage: (page, xhr) ->
+  loadPage: (page, xhr, scrollPosition) ->
     if page
       page.url = @url.toString('relative') unless page.url
 
@@ -230,6 +229,8 @@ class Pjax extends SimpleModule
         url: simple.url().toString('relative')
         name: $page.data('page-name') || @pageTitle()
         html: @el.html()
+
+    @restoreScrollPosition $page, scrollPosition
 
     @url = simple.url page.url
     @setCache page
@@ -289,6 +290,21 @@ class Pjax extends SimpleModule
       Pjax.pageCache[url]
     else
       null
+
+  restoreScrollPosition: ($page, scrollPosition) ->
+    try
+      $scrollContainer = $($page.data('scroll-container-selector'))
+      $scrollContainer = $(document) unless $scrollContainer.length
+    catch error
+      $scrollContainer = $(document)
+
+    unless scrollPosition
+      scrollPosition =
+        top: 0
+        left: 0
+
+    $scrollContainer.scrollTop(scrollPosition.top)
+      .scrollLeft(scrollPosition.left)
 
   @clearCache: (url) ->
     if url
