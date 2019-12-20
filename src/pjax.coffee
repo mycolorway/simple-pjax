@@ -138,8 +138,20 @@ class Pjax extends SimpleModule
     @url = url
 
     page = @getCache()
+
+    scrollPosition =
+      top: 0
+      left: 0
+
     if page and !page.nocache and !opts.nocache
+      if opts.scrollPosition and page.params?.scrollPosition
+        scrollPosition.top = page.params.scrollPosition.top
+        scrollPosition.left = page.params.scrollPosition.left
+
+      @el.addClass('before-restore-scroll-position')
       @el[0].innerHTML = page.html
+      @restoreScrollPosition @el.children().first(), scrollPosition
+      @el.removeClass('before-restore-scroll-position')
     else
       @el.addClass 'pjax-loading'
       @slowTimer = setTimeout =>
@@ -160,18 +172,8 @@ class Pjax extends SimpleModule
     @el.height ''
     @trigger 'pjaxbeforeload', [page]
 
-    $page = @el.children().first()
-
-    scrollPosition =
-      top: 0
-      left: 0
-
-    if opts.scrollPosition and state.params?.scrollPosition
-      scrollPosition.top = state.params.scrollPosition.top
-      scrollPosition.left = state.params.scrollPosition.left
-
     if opts.norefresh and page
-      @restoreScrollPosition $page, scrollPosition
+      $page = @el.children().first()
       pageId = $page.attr 'id'
       $(document).trigger 'pjaxload#' + pageId, [$page, page] if pageId
       @trigger 'pjaxload', [$page, page]
@@ -218,7 +220,10 @@ class Pjax extends SimpleModule
         $page = ''
 
       clearTimeout @slowTimer if @slowTimer
+      @el.addClass('before-restore-scroll-position')
       @el.empty().append $page
+      @restoreScrollPosition $page, scrollPosition
+      @el.removeClass('before-restore-scroll-position')
       @el.removeClass 'pjax-loading'
       @el.removeClass 'pjax-loading-slow'
 
@@ -229,8 +234,6 @@ class Pjax extends SimpleModule
         url: simple.url().toString('relative')
         name: $page.data('page-name') || @pageTitle()
         html: @el.html()
-
-    @restoreScrollPosition $page, scrollPosition
 
     @url = simple.url page.url
     @setCache page
