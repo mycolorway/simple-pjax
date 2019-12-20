@@ -148,10 +148,9 @@ class Pjax extends SimpleModule
         scrollPosition.top = page.params.scrollPosition.top
         scrollPosition.left = page.params.scrollPosition.left
 
-      @el.addClass('before-restore-scroll-position')
       @el[0].innerHTML = page.html
       @restoreScrollPosition @el.children().first(), scrollPosition
-      @el.removeClass('before-restore-scroll-position')
+      @el.offsetHeight # force reflow
     else
       @el.addClass 'pjax-loading'
       @slowTimer = setTimeout =>
@@ -220,10 +219,11 @@ class Pjax extends SimpleModule
         $page = ''
 
       clearTimeout @slowTimer if @slowTimer
-      @el.addClass('before-restore-scroll-position')
+
+
       @el.empty().append $page
       @restoreScrollPosition $page, scrollPosition
-      @el.removeClass('before-restore-scroll-position')
+      @el.offsetHeight # force reflow
       @el.removeClass 'pjax-loading'
       @el.removeClass 'pjax-loading-slow'
 
