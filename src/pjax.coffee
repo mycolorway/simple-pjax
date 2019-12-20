@@ -139,6 +139,7 @@ class Pjax extends SimpleModule
 
     page = @getCache()
     if page and !page.nocache and !opts.nocache
+      @el.addClass 'pjax-cache'
       @el[0].innerHTML = page.html
     else
       @el.addClass 'pjax-loading'
@@ -172,6 +173,7 @@ class Pjax extends SimpleModule
 
     if opts.norefresh and page
       @restoreScrollPosition $page, scrollPosition
+      @el.removeClass 'pjax-cache'
       pageId = $page.attr 'id'
       $(document).trigger 'pjaxload#' + pageId, [$page, page] if pageId
       @trigger 'pjaxload', [$page, page]
@@ -219,6 +221,8 @@ class Pjax extends SimpleModule
 
       clearTimeout @slowTimer if @slowTimer
       @el.empty().append $page
+      @restoreScrollPosition $page, scrollPosition
+      @el.removeClass 'pjax-cache'
       @el.removeClass 'pjax-loading'
       @el.removeClass 'pjax-loading-slow'
 
@@ -229,8 +233,6 @@ class Pjax extends SimpleModule
         url: simple.url().toString('relative')
         name: $page.data('page-name') || @pageTitle()
         html: @el.html()
-
-    @restoreScrollPosition $page, scrollPosition
 
     @url = simple.url page.url
     @setCache page
