@@ -307,7 +307,8 @@ class Pjax extends SimpleModule
         left: 0
 
     $scrollContainer.scrollTop(scrollPosition.top)
-      .scrollLeft(scrollPosition.left)
+      .scrollLeft(scrollPosition.left)  
+    $scrollContainer[0].offsetHeight
 
   @clearCache: (url) ->
     if url
